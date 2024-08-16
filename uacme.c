@@ -663,7 +663,7 @@ bool account_keychange(acme_t *a, bool never, keytype_t type, int bits)
     if (system(buffer) < 0) {
 #endif
         warn("failed to link %s to %s", bakfile, keyfile);
-    else {
+    } else {
         msg(1, "renaming %s to %s", newkeyfile, keyfile);
         if (rename(newkeyfile, keyfile) < 0) {
             warn("failed to rename %s to %s", newkeyfile, keyfile);

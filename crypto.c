@@ -1786,6 +1786,7 @@ bool is_ip(const char *s, unsigned char *ip, size_t *ip_len)
                     memcpy(ip, &s->sin_addr, sizeof(struct in_addr));
             }
             ret = true;
+#ifndef __OS2__
         } else if (ai->ai_family == AF_INET6) {
             if (ip_len && *ip_len >= sizeof(struct in6_addr)) {
                 struct sockaddr_in6 *s = (struct sockaddr_in6 *)ai->ai_addr;
@@ -1794,6 +1795,7 @@ bool is_ip(const char *s, unsigned char *ip, size_t *ip_len)
                     memcpy(ip, &s->sin6_addr, sizeof(struct in6_addr));
             }
             ret = true;
+#endif
         } else if (ip_len)
             *ip_len = 0;
         freeaddrinfo(ai);
