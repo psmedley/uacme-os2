@@ -1,0 +1,108 @@
+2019-09-30 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.19
+	- Fix configure script bug when using explicit
+	  PKG_CONFIG environment variable
+	- explicitly set key usage in certificate request
+
+2019-08-29 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.18
+	- support for OCSP Must-Staple (-m, --must-staple)
+	- explicitly set key usage constraints with mbedTLS
+	- fix compilation warning with gcc7 on solaris
+
+2019-07-03 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.17
+	- fix pedantic compilation warning
+        - configure fails if pkg-config isn't found
+
+2019-06-17 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.16
+	- Configure script checks for libcurl HTTPS support
+	- Minor man page corrections
+
+2019-06-15 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.15
+	- Exit with error if both -a and -s are specified
+	- Avoid depending on libtasn1 if gnutls_decode_rs_value is available
+
+2019-06-12 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.14
+	- Fix deprecated API when building with OpenSSL v1.1.1c
+
+2019-06-05 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.13
+	- Disable mbedTLS runtime version check if not available
+
+2019-05-18 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.12
+	- Ensure EC key params are always properly padded
+	- Improved hook_run error checking
+
+2019-05-17 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.11
+	- Key rollover (https://tools.ietf.org/html/rfc8555#section-7.3.5)
+	- Revoked cert files now renamed to 'revoked-TIMESTAMP.pem'
+	- Key auth contains SHA256 digest for tls-alpn-01 (like dns-01)
+	- Minor logging improvements
+
+2019-05-12 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.10
+	- added secp384r1 EC key support
+	- -b, --bits option accepts 256 or 384 for EC keys
+	- enforce multiple of 8 RSA key size
+	- improved acme_get and acme_post verbose logging
+	- retry upon badNonce response according to RFC8555 6.5
+	- mbedtls: fixed incorrect size of EC signature
+
+2019-05-09 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.9
+	- added EC key/cert support (-t, --type=EC, default RSA)
+	- added RSA key length option (-b, --bits=BITS, default 2048)
+
+2019-05-04 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.8
+	- added OpenSSL support (./configure --with-openssl)
+	- check libraries versions at both compile and run time
+	- exit codes: 0=success, 1=cert issuance skipped, 2=error
+	- mbedtls: dynamically grow buffers when needed
+
+2019-04-29 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.7
+	- added HTTP User-Agent: header to all requests
+	- added --disable-docs configure option
+	- manpage version now updated automatically
+
+2019-04-27 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.6
+	- fix uninitialized variable in authorize()
+
+2019-04-27 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.5
+	- add AM_MAINTAINER_MODE to configure.ac
+	- minor cosmetic change to json primitive dump
+
+2019-04-26 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.4
+	- debian packaging
+	- fix potential uninitialized var access in acme_get()
+	- fix fprintf format string in _json_dump()
+	- copy doc/index.html on demand only
+
+2019-04-25 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.3
+	- fixed more -pedantic gcc warnings
+	- html manpage in html5; copy as doc/html for github hosting
+
+2019-04-24 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.2
+	- allow choosing between GnuTLS and mbedTLS at compile time
+	- improved directory existence check
+	- fixed -Wall -pedantic gcc warnings
+
+2019-04-21 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.1
+	- fix acme challenge web server path
+	- fix spelling in help text
+
+2019-04-21 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* First public release (1.0)
