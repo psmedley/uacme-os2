@@ -43,8 +43,11 @@
 
 #define PRODUCTION_URL "https://acme-v02.api.letsencrypt.org/directory"
 #define STAGING_URL "https://acme-staging-v02.api.letsencrypt.org/directory"
+#ifndef __OS2__
 #define DEFAULT_CONFDIR "/etc/ssl/uacme"
-
+#else
+#define DEFAULT_CONFDIR "/@unixroot/etc/ssl/uacme"
+#endif
 typedef struct acme
 {
     privkey_t key;
@@ -765,7 +768,11 @@ bool account_keychange(acme_t *a, bool never, keytype_t type, int bits)
     }
 
     msg(1, "backing up %s as %s", keyfile, bakfile);
+#ifndef __OS2__
     if (link(keyfile, bakfile) < 0)
+#else
+    if (system("cp --preserve=all keyfile, bakfile") < 0)
+#endif
     {
         warn("failed to link %s to %s", bakfile, keyfile);
     }
@@ -1231,7 +1238,11 @@ bool cert_issue(acme_t *a, bool status_req)
         fd = -1;
     }
 
+#ifndef __OS2__
     if (link(certfile, bakfile) < 0)
+#else
+    if (system("cp --preserve=all certfile, bakfile") < 0)
+#endif
     {
         if (errno != ENOENT)
         {
