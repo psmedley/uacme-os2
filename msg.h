@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Nicola Di Lieto <nicola.dilieto@gmail.com>
+ * Copyright (C) 2019,2020 Nicola Di Lieto <nicola.dilieto@gmail.com>
  *
  * This file is part of uacme.
  *
@@ -23,6 +23,11 @@
 
 extern int g_loglevel;
 
+#ifdef __GNUC__
+void __attribute__((format (printf, 2, 3))) msg(int level,
+        const char *format, ...);
+#else
 void msg(int level, const char *format, ...);
+#endif
 
 #endif

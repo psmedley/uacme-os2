@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Nicola Di Lieto <nicola.dilieto@gmail.com>
+ * Copyright (C) 2019,2020 Nicola Di Lieto <nicola.dilieto@gmail.com>
  *
  * This file is part of uacme.
  *
@@ -22,8 +22,7 @@
 #define __CURLWRAP_H__
 #include <curl/curl.h>
 
-typedef struct
-{
+typedef struct {
     char *body;
     size_t body_len;
     char *headers;
@@ -34,6 +33,7 @@ typedef struct
 curldata_t *curldata_calloc(void);
 void curldata_free(curldata_t *c);
 curldata_t *curl_get(const char *url);
-curldata_t *curl_post(const char *url, const char *post);
+curldata_t *curl_post(const char *url, void *post_data, size_t post_size,
+        const char *header, ...);
 
 #endif

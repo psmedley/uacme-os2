@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Nicola Di Lieto <nicola.dilieto@gmail.com>
+ * Copyright (C) 2019,2020 Nicola Di Lieto <nicola.dilieto@gmail.com>
  *
  * This file is part of uacme.
  *
@@ -18,6 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <err.h>
 #include <stdarg.h>
 
@@ -28,7 +30,8 @@ int g_loglevel = 0;
 void msg(int level, const char *format, ...)
 {
     va_list ap;
-    if (level > g_loglevel) return;
+    if (level > g_loglevel)
+        return;
     va_start(ap, format);
     vwarnx(format, ap);
     va_end(ap);

@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-CHALLENGE_PATH="${UACME_CHALLENGE_PATH:-/var/www/.well-known/acme-challenge}"
 ARGS=5
 E_BADARGS=85
 
@@ -32,31 +31,28 @@ IDENT=$3
 TOKEN=$4
 AUTH=$5
 
+if [ "$TYPE" != "tls-alpn-01" ]; then
+    echo "skipping $TYPE"
+    exit 1
+fi
+
 case "$METHOD" in
     "begin")
-        case "$TYPE" in
-            http-01)
-                echo -n "${AUTH}" > "${CHALLENGE_PATH}/${TOKEN}"
-                exit $?
-                ;;
-            *)
-                exit 1
-                ;;
-        esac
+        UALPN_OUT=$(echo "auth $IDENT $AUTH" | ualpn)
+        if [ "x$UALPN_OUT" = "xOK" ]; then
+            exit 0
+        else
+            exit 1
+        fi
         ;;
-
     "done"|"failed")
-        case "$TYPE" in
-            http-01)
-                rm "${CHALLENGE_PATH}/${TOKEN}"
-                exit $?
-                ;;
-            *)
-                exit 1
-                ;;
-        esac
+        UALPN_OUT=$(echo "unauth $IDENT" | ualpn)
+        if [ "x$UALPN_OUT" = "xOK" ]; then
+            exit 0
+        else
+            exit 1
+        fi
         ;;
-
     *)
         echo "$0: invalid method" 1>&2 
         exit 1

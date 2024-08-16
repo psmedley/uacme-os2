@@ -1,5 +1,68 @@
 uacme NEWS
-Copyright (C) 2019 Nicola Di Lieto <nicola.dilieto@gmail.com>
+Copyright (C) 2019,2020 Nicola Di Lieto <nicola.dilieto@gmail.com>
+
+## [1.2.4] - 2020-04-25
+### Changed
+- improve mbedTLS detection in configure.ac
+- check format string arguments with GCC
+- ualpn: fix incorrect message arguments
+
+## [1.2.3] - 2020-04-22
+### Changed
+- fix Content-Type header parsing
+  https://github.com/ndilieto/uacme/issues/22
+
+## [1.2.2] - 2020-04-18
+### Changed
+- fix ualpn socket type bug on uClibc based systems
+- fix configure.ac MAP_ANON cross-compilation test
+
+## [1.2.1] - 2020-04-17
+### Changed
+- increase cert buf size to cope with long identifiers
+- fix gcc8 -Wstringop-truncation warning
+
+## [1.2] - 2020-04-15
+### Added
+- uacme OCSP certificate status check
+- ualpn OpenSSL/mbedTLS implementations
+
+### Changed
+- add key usage to ualpn challenge certificate
+- ensure top bit of ualpn certificate S/N is 0 with OpenSSL
+- fix ualpn memory leaks and corner case bugs
+- minor cosmetic code/documentation changes
+
+## [1.1.2] - 2020-03-12
+### Changed
+- fix configure.ac typo affecting LDFLAGS
+- fix missing PIPE_BUF when building on hurd-386
+
+## [1.1.1] - 2020-03-12
+### Changed
+- fix typo breaking build without HAVE_SPLICE
+- fix addr_t name collision on s390x
+
+## [1.1] - 2020-03-11
+### Added
+- IP identifier support (RFC8738)
+- tls-alpn-01 (RFC8737) challenge responder (ualpn)
+
+## [1.0.22] - 2020-02-01
+### Changed
+- relax account status check (compatibility with buypass.no)
+- allow client challenge retry requests (RFC8555 section 7.1.6)
+- add wildcard clarification in manpage
+
+## [1.0.21] - 2020-01-12
+### Changed
+- Quote variables in uacme.sh
+- Added LFS support (AC_SYS_LARGEFILE)
+
+## [1.0.20] - 2019-10-03
+### Changed
+- improved HTTP header parsing to fix problem that
+  can happen when retrieving directory over HTTP/2
 
 ## [1.0.19] - 2019-09-30
 ### Changed

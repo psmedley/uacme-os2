@@ -15,11 +15,11 @@ SYNOPSIS
 --------
 *uacme* [*-a*|*--acme-url* 'URL'] [*-b*|*--bits* 'BITS']
     [*-c*|*--confdir* 'DIR'] [*-d*|*--days* 'DAYS'] [*-f*|*--force*]
-    [*-h*|*--hook* 'PROGRAM'] [*-m*|*--must-staple*] [*-n*|*--never*]
-    [*-s*|*--staging*] [*-t*|*--type* *RSA*|*EC*] [*-v*|*--verbose* ...]
-    [*-V*|*--version*] [*-y*|*--yes*] [*-?*|*--help*]
+    [*-h*|*--hook* 'PROGRAM'] [*-m*|*--must-staple*] [*-n*|*--never-create*]
+    [*-o*|*--no-ocsp*] [*-s*|*--staging*] [*-t*|*--type* *RSA*|*EC*]
+    [*-v*|*--verbose* ...] [*-V*|*--version*] [*-y*|*--yes*] [*-?*|*--help*]
     *new* ['EMAIL'] | *update* ['EMAIL'] | *deactivate* | *newkey* |
-    *issue* 'DOMAIN' ['ALTNAME' ...]] | *revoke* 'CERTFILE'
+    *issue* 'IDENTIFIER' ['ALTNAME' ...]] | *revoke* 'CERTFILE'
 
 
 DESCRIPTION
@@ -50,15 +50,16 @@ OPTIONS
     (*NID_X9_62_prime256v1* curve) or 384 (*NID_secp384r1* curve).
 
 *-c, --confdir*='CONFDIR'::
-    Use configuration directory 'CONFDIR' (default '/etc/ssl/uacme').
-    The structure is as follows (multiple 'DOMAINs' allowed)
+    Use configuration directory 'CONFDIR' (default '{sysconfdir}/ssl/uacme').
+    The structure is as follows (multiple 'IDENTIFIERs' allowed)
         'CONFDIR/private/key.pem'::: ACME account private key
-        'CONFDIR/private/DOMAIN/key.pem'::: certificate key for 'DOMAIN'
-        'CONFDIR/DOMAIN/cert.pem'::: certificate for 'DOMAIN'
+        'CONFDIR/private/IDENTIFIER/key.pem'::: certificate key for
+        'IDENTIFIER'
+        'CONFDIR/IDENTIFIER/cert.pem'::: certificate for 'IDENTIFIER'
 
 *-d, --days*='DAYS'::
     Do not reissue certificates that are still valid for longer
-    than 'DAYS' (default 30).
+    than 'DAYS' (default 30). See also *-o, --no-ocsp*.
 
 *-f, --force*::
     Force certificate reissuance regardless of expiration date.
@@ -66,7 +67,7 @@ OPTIONS
 *-h, --hook*='PROGRAM'::
     Challenge hook program. If not specified *uacme* interacts with
     the user for every ACME challenge, printing information about the
-    challenge type, token and authorization on stderr.  If specified,
+    challenge type, token and authorization on stderr.  If specified
     *uacme* executes 'PROGRAM' (a binary, a shell script or any file that
     can be executed by the operating system) for every challenge with
     the following 5 string arguments:
@@ -90,8 +91,16 @@ OPTIONS
 
 *-n, --never-create*::
     By default *uacme* creates directories/keys if they do not exist.
-    When this option is specified, *uacme* never does so and instead
+    When this option is specified *uacme* never does so and instead
     exits with an error if anything required is missing.
+
+*-o, --no-ocsp*::
+    When this flag is *not* specified and the certificate has an
+    Authority Information Access extension with an OCSP server location
+    according to <https://tools.ietf.org/html/rfc5280#section-4.2.2.1> 
+    *uacme* makes an OCSP request to the server; if the certificate is
+    reported as revoked *uacme* forces reissuance regardless of the
+    expiration date. See also *-d, --days*.
 
 *-s, --staging*::
     Use Let's Encrypt staging URL for testing. This only works if
@@ -132,8 +141,8 @@ USAGE
 
 *uacme* ['OPTIONS' ...] *update* ['EMAIL']::
     Update the 'EMAIL' associated with the ACME account corresponding to
-    the account private key. If 'EMAIL' is not specified, the account
-    contact email will be dropped.
+    the account private key. If 'EMAIL' is not specified the account
+    contact email is removed.
 
 *uacme* ['OPTIONS' ...] *deactivate*::
     Deactivate the ACME account corresponding to the account private
@@ -150,17 +159,25 @@ USAGE
     is hardlinked to 'CONFDIR/private/key-TIMESTAMP.pem' before
     renaming 'CONFDIR/private/newkey.pem' to 'CONFDIR/private/key.pem'.
 
-*uacme* ['OPTIONS' ...] *issue* 'DOMAIN' ['ALTNAME' ...]::
-    Issue a certificate for 'DOMAIN' with zero or more 'ALTNAMEs'.
-    If a certificate is already available at 'CONFDIR/DOMAIN/cert.pem'
-    for the specified 'DOMAIN' and 'ALTNAMEs', and is still valid for
-    longer than 'DAYS', no action is taken unless *-f, --force* is
-    specified. The new certificate is saved to 'CONFDIR/DOMAIN/cert.pem'.
-    If the certificate file already exists, it is hardlinked to
-    'CONFDIR/DOMAIN/cert-TIMESTAMP.pem' before overwriting.
-    The private key for the certificate is loaded from
-    'CONFDIR/private/DOMAIN/key.pem'. If no such file exists,
+*uacme* ['OPTIONS' ...] *issue* 'IDENTIFIER' ['ALTNAME' ...]::
+    Issue a certificate for 'IDENTIFIER' with zero or more 'ALTNAMEs'.
+    If a certificate is already available at 'CONFDIR/IDENTIFIER/cert.pem'
+    for the specified 'IDENTIFIER' and 'ALTNAMEs' and is still valid for
+    longer than 'DAYS' no action is taken unless *-f, --force* is specified
+    or *-o, --no-ocsp* is *not* specified and the certificate is reported
+    as revoked by the OCSP server.  The new certificate is saved to
+    'CONFDIR/IDENTIFIER/cert.pem'.  If the certificate file already exists
+    it is hardlinked to 'CONFDIR/IDENTIFIER/cert-TIMESTAMP.pem' before
+    overwriting.  The private key for the certificate is loaded from
+    'CONFDIR/private/IDENTIFIER/key.pem'. If no such file exists,
     a new key is generated unless *-n, --never-create* is specified.
+    Wildcard IDENTIFIERs or ALTNAMEs are dealt with correctly, as long as
+    the ACME server supports them; note that any such wildcards are 
+    automatically removed from the configuration subdirectory name:
+    for example a certificate for '*.test.com' is saved to
+    'CONFDIR/test.com/cert.pem'.
+    IP address IDENTIFIERs and ALTNAMEs are also supported according to
+    <https://tools.ietf.org/html/rfc8738#section-3>
 
 *uacme* ['OPTIONS' ...] *revoke* 'CERTFILE'::
     Revoke the certificate stored in 'CERTFILE'. Only certificates
@@ -196,7 +213,7 @@ same machine, with webroot at /var/www
     
     if test $# -ne "$ARGS"
     then
-        echo "Usage: `basename $0` method type ident token auth" 1>&2
+        echo "Usage: $(basename "$0") method type ident token auth" 1>&2
         exit $E_BADARGS
     fi
     
@@ -210,7 +227,7 @@ same machine, with webroot at /var/www
         "begin")
             case "$TYPE" in
                 http-01)
-                    echo -n "${AUTH}" > ${CHALLENGE_PATH}/${TOKEN}
+                    echo -n "${AUTH}" > "${CHALLENGE_PATH}/${TOKEN}"
                     exit $?
                     ;;
                 *)
@@ -221,14 +238,13 @@ same machine, with webroot at /var/www
         "done"|"failed")
             case "$TYPE" in
                 http-01)
-                    rm ${CHALLENGE_PATH}/${TOKEN}
+                    rm "${CHALLENGE_PATH}/${TOKEN}"
                     exit $?
                     ;;
                 *)
                     exit 1
                     ;;
             esac
-            exit 0
             ;;
         *)
             echo "$0: invalid method" 1>&2 
@@ -242,6 +258,9 @@ If you believe you have found a bug, please create a new issue
 at https://github.com/ndilieto/uacme/issues with any applicable
 information. 
 
+SEE ALSO
+--------
+*ualpn*(1)
 
 AUTHOR
 ------
@@ -249,7 +268,7 @@ AUTHOR
 
 COPYRIGHT
 ---------
-Copyright (C) 2019 Nicola Di Lieto <nicola.dilieto@gmail.com>
+Copyright (C) 2019,2020 Nicola Di Lieto <nicola.dilieto@gmail.com>
 
 This file is part of *uacme*.
 

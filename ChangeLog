@@ -1,3 +1,65 @@
+2020-04-25 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.2.4
+	- improve mbedTLS detection in configure.ac
+	- check format string arguments with GCC
+	- ualpn: fix incorrect message arguments
+
+2020-04-22 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.2.3
+	- fix Content-Type header parsing
+	  https://github.com/ndilieto/uacme/issues/22
+
+2020-04-18 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.2.2
+	- fix ualpn socket type bug on uClibc based systems
+	- fix configure.ac MAP_ANON cross-compilation test
+
+2020-04-17 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.2.1
+	- increase cert buf size to cope with long identifiers
+	- fix gcc8 -Wstringop-truncation warning
+
+2020-04-15 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.2
+	- add uacme OCSP certificate status check
+	- add ualpn OpenSSL/mbedTLS implementations
+	- add key usage to ualpn challenge certificate
+	- ensure top bit of ualpn certificate S/N is 0 with OpenSSL
+	- fix ualpn memory leaks and corner case bugs
+	- minor cosmetic code and documentation changes
+
+2020-03-12 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.1.2
+	- fix configure.ac typo affecting LDFLAGS
+	- fix missing PIPE_BUF when building on hurd-386
+
+2020-03-12 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.1.1
+	- fix typo breaking build without HAVE_SPLICE
+	- fix addr_t name collision on s390x
+
+2020-03-11 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.1
+	- added IP identifier support (RFC8738)
+	- added tls-alpn-01 (RFC8737) challenge responder (ualpn)
+
+2020-02-01 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.22
+	- relax account status check (compatibility with buypass.no)
+	- allow client challenge retry requests (RFC8555 sec. 7.1.6)
+	- pass -L flag to a2x in order to avoid depending on xmllint
+	- add wildcard clarification in manpage
+
+2020-01-12 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.21
+	- Fixed uacme.sh: https://github.com/ndilieto/uacme/pull/12
+	- Added LFS support (AC_SYS_LARGEFILE)
+
+2019-10-03 Nicola Di Lieto <nicola.dilieto@gmail.com>
+	* Release 1.0.20
+	- improved HTTP header parsing to fix problem that
+	  can happen when retrieving directory over HTTP/2
+
 2019-09-30 Nicola Di Lieto <nicola.dilieto@gmail.com>
 	* Release 1.0.19
 	- Fix configure script bug when using explicit
