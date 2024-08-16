@@ -660,7 +660,7 @@ bool account_keychange(acme_t *a, bool never, keytype_t type, int bits)
 #else
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "cp --preserve=all %s %s", keyfile, bakfile);    
-    if (system(buffer) < 0)
+    if (system(buffer) < 0) {
 #endif
         warn("failed to link %s to %s", bakfile, keyfile);
     else {
@@ -1050,7 +1050,7 @@ bool cert_issue(acme_t *a, bool status_req)
 #else
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "cp --preserve=all %s %s", certfile, bakfile);    
-    if (system(buffer) < 0)
+    if (system(buffer) < 0) {
 #endif
         if (errno != ENOENT) {
             warn("failed to link %s to %s", bakfile, certfile);
