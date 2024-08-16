@@ -771,7 +771,9 @@ bool account_keychange(acme_t *a, bool never, keytype_t type, int bits)
 #ifndef __OS2__
     if (link(keyfile, bakfile) < 0)
 #else
-    if (system("cp --preserve=all keyfile, bakfile") < 0)
+    char buffer[1024];
+    snprintf(buffer, sizeof(buffer), "cp --preserve=all %s %s", keyfile, bakfile);    
+    if (system(buffer) < 0)
 #endif
     {
         warn("failed to link %s to %s", bakfile, keyfile);
@@ -1241,7 +1243,9 @@ bool cert_issue(acme_t *a, bool status_req)
 #ifndef __OS2__
     if (link(certfile, bakfile) < 0)
 #else
-    if (system("cp --preserve=all certfile, bakfile") < 0)
+    char buffer[1024];
+    snprintf(buffer, sizeof(buffer), "cp --preserve=all %s %s", certfile, bakfile);    
+    if (system(buffer) < 0)
 #endif
     {
         if (errno != ENOENT)
